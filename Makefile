@@ -14,8 +14,7 @@ DATA		:=	data
 INCLUDES	:=	include
 GRAPHICS	:=	gfx
 GFXBUILD	:=	$(BUILD)
-RESOURCES   :=  res
-APP         :=  app
+RESOURCES   :=  resource
 
 #---------------------------------------------------------------------------------
 #Information
@@ -179,18 +178,10 @@ endif
 
 #---------------------------------------------------------------------------------
 all: $(BUILD) $(GFXBUILD) $(DEPSDIR) $(ROMFS_T3XFILES) $(T3XHFILES)
-	@$(MAKE) -j8 -s --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
-	@mkdir -p $(APP)
-	@mv $(TARGET).3dsx ./$(APP)
+	@$(MAKE) -j -s --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 	@$(BANNERTOOL) makebanner $(BANNER_IMAGE_ARG) "$(BANNER_IMAGE)" $(BANNER_AUDIO_ARG) "$(BANNER_AUDIO)" -o "$(BUILD)/banner.bnr"
 	@$(BANNERTOOL) makesmdh -s "$(APP_TITLE)" -l "$(APP_DESCRIPTION)" -p "$(APP_AUTHOR)" -i "$(APP_ICON)" -f "$(ICON_FLAGS)" -o "$(BUILD)/icon.icn"
-	@$(MAKEROM) -f cci -o "$(OUTPUT).3ds" -target t -exefslogo $(MAKEROM_ARGS)
-	@echo built ... $(TARGET).3ds
 	@$(MAKEROM) -f cia -o "$(OUTPUT).cia" -target t -exefslogo $(MAKEROM_ARGS)
-	@echo built ... $(TARGET).cia
-	@rm $(TARGET).elf $(TARGET).smdh
-	@mv $(TARGET).3ds $(TARGET).cia ./$(APP)
-	@echo Finished! Your application have been built!
 
 $(BUILD):
 	@mkdir -p $@
@@ -208,8 +199,7 @@ endif
 #---------------------------------------------------------------------------------
 clean:
 	@echo Clean ...
-	@rm -fr $(BUILD) $(TARGET).3dsx $(OUTPUT).smdh $(TARGET).elf $(TARGET).cia $(APP) $(GFXBUILD)
-	@echo Finished! Your application have been erased!
+	@rm -fr $(BUILD) $(TARGET).3dsx $(OUTPUT).smdh $(TARGET).elf $(TARGET).cia
 
 #---------------------------------------------------------------------------------
 $(GFXBUILD)/%.t3x	$(BUILD)/%.h	:	%.t3s
